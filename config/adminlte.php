@@ -126,7 +126,7 @@ return [
     'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'sidebar-primary elevation-4',
+    'classes_sidebar' => 'sidebar-dark-primary elevation-4',
     'classes_sidebar_nav' => '',
     'classes_topnav' => 'navbar-white navbar-light',
     'classes_topnav_nav' => 'navbar-expand',
@@ -234,8 +234,42 @@ return [
         [
             'text'        => 'Inicio',
             'url'         => 'home',
-            'icon'        => 'far fa-fw fa-file',
+            'icon'        => 'fas fa-fw fa-home',
             
+        ],
+        [
+            'text'        => 'Empleados',
+            'url'         => 'empleadoimg',
+            'icon'        => 'far fa-fw fa-user',
+            
+        ],
+        /*[
+            'text'        => 'Cargos',
+            'url'         => 'cargo',
+            'icon'        => 'fas fa-fw fa-briefcase',
+            
+        ],*/
+        [
+            'text'        => 'Restricciones',
+            'url'         => 'restriccion',
+            'icon'        => 'fa fa-fw fa-ban',
+            
+        ],
+        [
+            'text'        => 'Lugares',
+            'url'         => 'lugar',
+            'icon'        => 'fas fa-fw fa-industry',
+            
+        ],
+        [
+            'text'        => 'Empleado - restricción',
+            'url'         => 'restriccionempleado',
+            'icon'        => 'fas fa-fw fa-universal-access',
+        ],
+        [
+            'text'        => 'Lugar - restricción',
+            'url'         => 'lugarrestriccion',
+            'icon'        => 'fas fa-fw fa-thumbs-up',
         ],
         [
             'text'    => 'multilevel',

@@ -11,6 +11,7 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
+mix.js('resources/js/app.js','public/js','resources/js/toastr.js','resources/js/jquery.js','resources/js/datatables.min.js')
     .sass('resources/sass/app.scss', 'public/css')
+    .css('resources/css/toastr.css','resources/css/datatables.min.css')
     .sourceMaps();
