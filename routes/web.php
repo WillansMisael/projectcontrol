@@ -39,13 +39,8 @@ Route::get('restriccion/eliminar/{id}', [App\Http\Controllers\RestriccionControl
 Route::get('restriccion/editar/{id}',  [App\Http\Controllers\RestriccionController::class, 'editar'])->name('restriccion.editar');
 Route::post('restriccion/actualizar',  [App\Http\Controllers\RestriccionController::class, 'actualizar'])->name('restriccion.actualizar');
 //restriccionfin
-//empleado
-Route::get('/empleado', [App\Http\Controllers\EmpleadoController::class, 'index'])->name('empleado.index');
-Route::post('empleado', [App\Http\Controllers\EmpleadoController::class, 'registrar'])->name('empleado.registrar');
-Route::get('empleado/eliminar/{id}', [App\Http\Controllers\EmpleadoController::class, 'eliminar'])->name('empleado.eliminar');
-Route::get('empleado/edit/{id}',  [App\Http\Controllers\EmpleadoController::class, 'editar'])->name('empleado.editar');
-Route::post('empleado/actualizar',  [App\Http\Controllers\EmpleadoController::class, 'actualizar'])->name('empleado.actualizar');
-//empleadofin
+//empleadoimg
+
 
 Route::get('/empleadoimg', [App\Http\Controllers\EmpleadoimgController::class, 'index'])->name('empleadoimg.index');
 Route::get('/empleadoimg/create', [App\Http\Controllers\EmpleadoimgController::class, 'create'])->name('empleadoimg.create');
@@ -53,6 +48,7 @@ Route::post('/empleadoimg', [App\Http\Controllers\EmpleadoimgController::class, 
 Route::get('/empleadoimg/edit/{id}',  [App\Http\Controllers\EmpleadoimgController::class, 'edit'])->name('empleadoimg.edit');
 Route::patch('/empleadoimg/{id}',  [App\Http\Controllers\EmpleadoimgController::class, 'update'])->name('empleadoimg.update');
 Route::get('empleadoimg/eliminar/{id}', [App\Http\Controllers\EmpleadoimgController::class, 'eliminar'])->name('empleadoimg.eliminar');
+//empleadofinimg
 
 //lugarrestriccion
 
