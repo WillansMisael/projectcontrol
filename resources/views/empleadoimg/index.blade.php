@@ -74,29 +74,6 @@
         });
        });
 </script>
-
-<script>/*
-    //listar registros con datatable
-    $(document).ready(function(){
-        var tablaempleado = $('#tabla-empleado').DataTable({
-
-            processing:true,
-            serverSide:true,
-            ajax:{
-                url: "{{ route('empleado.index') }}",
-            },
-            columns:[
-                {data: 'id'},
-                {data: 'nombre'},
-                {data: 'apellido'},
-                {data: 'ci'},
-                {data: 'foto'},
-                {data: 'estado'},
-                {data: 'action', orderable: false}
-            ]
-        });
-    });*/
-</script>
 <script>
 //eliminar un registro
     var id;
@@ -124,74 +101,4 @@
     });
 </script>
     @endsection  
-<script>/*
-// editar un registro
-    function editarEmpleado(id){
-        //recuperamos datos
-        $.get('empleado/editar/'+id, function(empleado){
-            //asignar los datos recuperados a la ventana modal\
-            $('#txtId2').val(empleado[0].id);
-            $('#txtNombre2').val(empleado[0].nombre);
-            $('#txtApellido2').val(empleado[0].apellido);
-            $('#txtFoto2').val(empleado[0].foto);
-            $('#txtCi2').val(empleado[0].ci);
-            if(empleado[0].estado == "Activo"){
-                $('input[name=rbEstado2][value="Activo"]').prop('checked',true);
-            }
-            if(empleado[0].estado == "Inactivo"){
-                $('input[name=rbEstado2][value="Inactivo"]').prop('checked',true);
-            }
-            $("input[name=_token]").val();
-            $('#empleado_edit_modal').modal('toggle');
-        });
-    }*/
-</script>
-<script>/*
-//actualizar registro
-    $('#empleado_edit_form').submit(function(e){
-        e.preventDefault();
-        var id2 = $('#txtId2').val();
-        var nombre2 = $('#txtNombre2').val();
-        var apellido2 = $('#txtApellido2').val();
-        var ci2 = $('#txtCi2').val();
-        var foto2 = $('#txtFoto2').val();
-        var estado2 = $("input[name='rbEstado2']:checked").val(); //solo para checkbox
-        var _token = $("input[name=_token]").val();
-        
-        $.ajax({
-            url: "{{ route('empleado.actualizar') }}",
-            type: "POST",
-            data: {
-                id :id2,
-                nombre :nombre2,
-                apellido: apellido2,
-                ci: ci2,
-                foto: foto2,
-                estado: estado2,
-                _token:_token
-            },
-        success:function(response){
-            if(response){
-                $('#empleado_edit_modal').modal('hide');
-                toastr.info('El registro fue actualizado correctamente.','Actualizar Registro',{timeOut:3000});
-                    $('#tabla-empleado').DataTable().ajax.reload();
-            }
-        }
-        });
-    });*/
-</script>
-<script>/*
-    var $avatarInput, $avatarImage;
-    $(function () {
-        $avatarInput = $('#avatarInput');
-        $avatarImage = $('#avatarImage');
 
-        $avatarImage.on('click', function () {
-            $avatarInput.click();
-        });
-
-        $avatarInput.on('change', function (){
-            alert('image');
-        });
-    });*/
-</script>
