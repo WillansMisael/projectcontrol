@@ -2,70 +2,61 @@
 @section('title', 'empleados')
 @section('css')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" integrity="sha512-vKMx8UnXk60zUwyUnUPM3HbQo8QfmNx7+ltw8Pm5zLusl1XIfwcxo8DbWCqMGKaWeNxWA8yrx5v3SaVpMvR3CA==" crossorigin="anonymous" />
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.22/r-2.2.6/datatables.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.22/datatables.min.css"/>
 @endsection
 @section('js')
- 
-<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.22/r-2.2.6/datatables.min.js"></script>
-
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.22/datatables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" crossorigin="anonymous"></script>
 @endsection
 @section('content')
 <a href="{{ route('empleadoimg.create') }}" class="btn btn-success mb-2">Añadir Empleado</a> 
 <br>
 
-<div class="card">
-    <div class="card-header">
-      <h3 class="card-title">Lista de Empleados</h3>
+<div class="container">
+    <div class="row justify-content-center">
+            <div class="col-md-9 col-sm-12">
+                <table id="tabla-empleado-activo" class="table table-hover">
+                    <thead>
+                        <td>ID</td>
+                        <td>Nombre</td>
+                        <td>Apellido</td>
+                        <td>Ci</td>
+                        <td>Estado</td>
+                        <td>Foto</td>
+                        <td>Acciones</td>
+                    </thead>
+                </table>
+        </div>
     </div>
-    <!-- /.card-header -->
-    <div class="card-body">
-      <div id="example1_wrapper" class="dataTables_wrapper dt-bootstrap4"><div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" id="example1_length"><label>Show <select name="example1_length" aria-controls="example1" class="custom-select custom-select-sm form-control form-control-sm"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div></div><div class="col-sm-12 col-md-6"><div id="example1_filter" class="dataTables_filter"><label>Buscar:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="example1"></label></div></div></div><div class="row"><div class="col-sm-12"><table id="example1" class="table table-bordered table-striped dataTable dtr-inline" role="grid" aria-describedby="example1_info">
-        <thead>
-            <tr>
-            <th>Id</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>CI</th>
-            <th>Foto</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($empleadoimg as $e)
-            <tr>
-            <td>{{ $e->id }}</td>
-            <td>{{ $e->nombre }}</td>
-            <td>{{ $e->apellido }}</td>
-            <td>{{ $e->ci }}</td>
-            <td><img id="original" src="{{ url('public/image/'.$e->image) }}" height="70" width="70"></td>
-            
-            @if ($e->estado == "Activo")
-            <td><span class="badge badge-success">{{ $e->estado }}</span></td>
-            @else
-            <td><span class="badge badge-warning">{{ $e->estado }}</span></td>
-            @endif
-                <td>    
-            <form action="{{ route('empleadoimg.destroy', $e->id)}}" method="post">
-            {{ csrf_field() }}
-            @method('DELETE')
-            <a href="{{ route('empleadoimg.edit',$e->id)}}" class="btn btn-primary">Editar</a>
-            <button class="btn btn-danger" type="submit">Delete</button>
-            </form>
-            </td>
-            </tr>
-            @endforeach
-            </tbody>
-{!! $empleadoimg->links() !!}
+</div>
 
+
+ <!-- Modal eliminar -->
+ <div class="modal fade" id="confirModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Confirmacion</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            Quiere eliminar el registro?
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-info" data-dismiss="modal">Cerrar</button>
+            <button type="button" id="btnEliminar" name="btnEliminar" class="btn btn-danger">Eliminar</button>
+        </div>
+        </div>
     </div>
-    <!-- /.card-body -->
-  </div>
-@endsection  
-<script>/*
+    </div>
+
+
+<script>
        $(document).ready(function(){
-    $('#tabla-empleado').DataTable({
+        var tablaempleado = $('#tabla-empleado-activo').DataTable({
+
             processing:true,
             serverSide:true,
             ajax:{
@@ -76,25 +67,14 @@
                 {data: 'nombre'},
                 {data: 'apellido'},
                 {data: 'ci'},
-                {
-                    data: 'image',
-                    name: 'image',
-                    render: function (data, type, full, meta) {
-                        return "<img src= {{ URL::to('/') }}/images/"
-                        + data + "with='70' class='img-thumbnail '/>"
-                    },
-                    orderable: false
-                },
-                {data: 'estado'},
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: false
-                }
+                {data: 'estado', orderable: false},
+                {data: 'foto', orderable: false},
+                {data: 'acciones', orderable: false}
             ]
-    });
-    });*/
+        });
+       });
 </script>
+
 <script>/*
     //listar registros con datatable
     $(document).ready(function(){
@@ -117,40 +97,7 @@
         });
     });*/
 </script>
-<script>/*
-    //Registrar nuevo empleado
-    $('#registro-empleado').submit(function(e){
-        e.preventDefault();
-        var nombre = $('#txtNombre').val();
-        var apellido = $('#txtApellido').val();
-        var ci = $('#txtCi').val();
-        //var foto = $('#txtFoto').val();
-        var estado = $("input[name='rbEstado']:checked").val(); //solo para checkbox
-        var _token = $("input[name=_token]").val();
-
-        $.ajax({
-            url: "{{ route('empleado.registrar') }}",
-            type: "POST",
-            enctype:"multipart/form-data",
-            data:{
-                nombre: nombre,
-                apellido: apellido,
-                ci: ci,
-                //foto: foto,
-                estado: estado,
-                _token: _token
-            },
-            success:function(response){
-                if(response){
-                    $('#registro-empleado')[0].reset();
-                    toastr.success('El registro se ingreso correctamente.','Nuevo Registro',{timeOut:3000});
-                    $('#tabla-empleado').DataTable().ajax.reload();
-                }
-            }
-        });
-    });*/
-</script>
-<script>/*
+<script>
 //eliminar un registro
     var id;
     $(document).on('click','.delete', function(){
@@ -161,7 +108,7 @@
     });
     $('#btnEliminar').click(function(){
         $.ajax({
-            url: "empleado/eliminar/"+id,
+            url: "empleadoimg/eliminar/"+id,
             beforeSend:function(){
                 $('#btnEliminar').text('Eliminando...');
             },
@@ -174,8 +121,9 @@
                 $('#btnEliminar').text('Eliminar');
             }
         });
-    });*/
+    });
 </script>
+    @endsection  
 <script>/*
 // editar un registro
     function editarEmpleado(id){

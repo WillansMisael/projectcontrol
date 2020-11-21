@@ -12,12 +12,12 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Auth::routes();
 
 Route::get('/', function () {
     return view('home');
 });
 
-Auth::routes();
 //cargo
 Route::get('/cargo', [App\Http\Controllers\CargoController::class, 'index'])->name('cargo.index');
 Route::post('cargo', [App\Http\Controllers\CargoController::class, 'registrar'])->name('cargo.registrar');
@@ -52,7 +52,7 @@ Route::get('/empleadoimg/create', [App\Http\Controllers\EmpleadoimgController::c
 Route::post('/empleadoimg', [App\Http\Controllers\EmpleadoimgController::class, 'store'])->name('empleadoimg.store');
 Route::get('/empleadoimg/edit/{id}',  [App\Http\Controllers\EmpleadoimgController::class, 'edit'])->name('empleadoimg.edit');
 Route::patch('/empleadoimg/{id}',  [App\Http\Controllers\EmpleadoimgController::class, 'update'])->name('empleadoimg.update');
-Route::delete('/empleadoimg/{id}', [App\Http\Controllers\EmpleadoimgController::class, 'destroy'])->name('empleadoimg.destroy');
+Route::get('empleadoimg/eliminar/{id}', [App\Http\Controllers\EmpleadoimgController::class, 'eliminar'])->name('empleadoimg.eliminar');
 
 //lugarrestriccion
 

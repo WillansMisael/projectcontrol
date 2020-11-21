@@ -13,6 +13,10 @@ use DataTables;
 
 class LugarrestriccionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function index(Request $request){
 
         $lugar = DB::select('exec listar_lugar');

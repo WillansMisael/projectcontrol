@@ -5,15 +5,53 @@ use App\Models\Empleadoimg;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Redirect;
-use PDF;
+use DataTables; 
 use Intervention\Image\ImageManagerStatic as Image;   
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Routing\Controller as BaseController;
+
 class EmpleadoimgController extends Controller
 {
-    public function index()
+    public function __construct()
     {
-    $data['empleadoimg'] = Empleadoimg::orderBy('id','desc')->paginate(10);
-    return view('empleadoimg.index',$data);
+        $this->middleware('auth');
+    }
+    public function index(Request $request)
+    {
+        if($request->ajax()){
+            $empleados = DB::select('exec listar_empleado');
+            return DataTables::of($empleados)
+            ->addColumn('acciones', function($empleados){
+                $acciones = "<a href='empleadoimg/edit/$empleados->id' class='btn btn-info btn-sm'> Editar <a/>";
+                $acciones .= "&nbsp;<button type='button' name='delete' id='$empleados->id' class= 'delete btn btn-danger btn-sm'> Eliminar </a> ";
+                
+                // $acciones .= "<a href='empleadoimg/$empleados->id'  method='post' class='btn btn-danger btn-sm'> Eliminar <a/>";
+               // $acciones .= '&nbsp;<button type="button" name="delete" id="'.$empleados->id.'" class="delete btn btn-danger btn-sm"> Eliminar </a> ';
+               /* $acciones .= "<form action='{{ route('empleadoimg.destroy', $empleados->id)}}' method='post'>
+                                <button type='button' name='delete' id=$empleados->id class='delete btn btn-danger btn-sm'> Eliminar </a>
+                            </form>";
+                */
+               return $acciones;
+            })
+            ->addColumn('foto',function ($empleados)
+            {
+                $foto = '<img src="public/image/'.$empleados->image.'" height="70" width="70"/>';
+                return $foto;
+            })
+            ->addColumn('estado',function ($empleados)
+            {if($empleados->estado == "Activo"){
+                $estado = '<span class="badge badge-success">'.$empleados->estado.'</span>';
+            }else {
+                $estado = '<span class="badge badge-warning" style="color:white;">'.$empleados->estado.'</span>';
+
+            }
+                return $estado;
+            })
+            ->rawColumns(['foto','estado','acciones'])
+            ->make(true);
+        }
+        return view('empleadoimg.index');
     }
     public function create()
     {
@@ -21,37 +59,16 @@ class EmpleadoimgController extends Controller
     }
     public function store(Request $request)
     {
-       /* $file = $request->hasFile('image');
-        $file->move( $file->move(public_path().'\images\\',$empleadoimg->id.'.jpg')); 
-
-        $empleadoimg = new Empleadoimg;
-        $empleado->name = $request->get('nombre');
-        $empleado->apellido = $request->get('apellido');
-        $empleado->ci =  $request->get('ci');
-        $empleado->estado =  $request->get('estado');
-        $empleado->image = $user->id.'.jpg'; 
-        $empleadoimg->save();*/
-    /*$request->validate([
-    'title' => 'required',
-    'product_code' => 'required',
-    'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-    'description' => 'required',
-    ]);*//*
-        if ($files = $request->file('image')) {
-            $destinationPath = public_path().'\image\\'; // upload path
-            $profileImage = $files->getClientOriginalName();
-          //  $insert['image'] = "$profileImage";
-            $insert['image'] = $profileImage;
-        }*/
-        /*
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $name =$file->getClientOriginalName();
-            //$destinationPath = 'public/image/'; // upload path
-            $file->move(public_path().'\image\\', $name);
-            $insert['image'] = "$name";
-        }
-        */
+    $rules = [
+        'nombre' => 'required',
+        'apellido' => 'required',
+        'ci' => 'required',
+        'estado' => 'required',
+    ];
+    $customMessages = [
+        'required' => 'El campo :attribute no se puede dejar vacío',
+    ];
+    $validatedData = $request->validate($rules, $customMessages);
         $image = new Empleadoimg();
         $image->nombre=$request->get('nombre');
         $image->apellido=$request->get('apellido');
@@ -64,20 +81,11 @@ class EmpleadoimgController extends Controller
             $image->image=$request->get('ci').'.'.$extension; 
         }
         else{
-            $image->image='Ci_RomeroJose.jpeg'; 
+            $image->image='defecto.jpeg'; 
         }
         $image->save();
         return Redirect::to('empleadoimg');
-    /*//$insert['image'] = 'hola';
-    $image=$request->file('image')->getClientOriginalExtension();
-    $insert['nombre'] = $request->get('nombre');
-    $insert['apellido'] = $request->get('apellido');
-    $insert['ci'] = $request->get('ci');
-    $insert['estado'] = $request->get('estado');
-    Empleadoimg::insert($request->all(),$data['image']=$image);
-    return Redirect::to('empleadoimg')
-    ->with('success','Greate! Product created successfully.');
-    */}
+    }
     public function show(Request $request)
     {
     }
@@ -89,30 +97,15 @@ class EmpleadoimgController extends Controller
     }
     public function update(Request $request, $id)
     {
-    /*$request->validate([
-    'title' => 'required',
-    'product_code' => 'required',
-    'description' => 'required',
-    ]);*/
-    /*$update = [
-        'nombre' => $request->nombre,
-         'apellido' => $request->apellido,
-          'ci' => $request->ci, 
-          'estado' => $request->estado
+        $rules = [
+            'nombre2' => 'required',
+            'apellido2' => 'required',
+            'ci2' => 'required',
+            'estado2' => 'required',
         ];
-    if ($files = $request->file('image')) {
-    $destinationPath = 'public/image/'; // upload path
-    $profileImage =$request->file('image')->getClientOriginalExtension();
-    $files->move($destinationPath, $profileImage);
-    $image = new Empleadoimg();
-    $image->image=$request->file('image')->getClientOriginalName();
-    $image->nombre=$request->get('nombre');
-    $image->apellido=$request->get('apellido');
-    $image->ci=$request->get('ci');
-    $image->estado=$request->get('estado');
-    $image->update();
-    return Redirect::to('empleadoimg');*/
-
+        $customMessages = [
+            'required' => 'El campo :attribute no se puede dejar vacío',
+        ];
     
 
     $empleadoimg = Empleadoimg::find($id);
@@ -129,20 +122,13 @@ class EmpleadoimgController extends Controller
         $ruta=$request->file('image')->getClientOriginalName();
         Image::make($request->file('image'))->save('public/image/'.$ruta);
         $empleadoimg->image = $ruta;
-    //return dd($empleadoimg);
     }
     $empleadoimg->save();
-    //$empleadoimg->save();
-return redirect::to('empleadoimg');
+    return redirect::to('empleadoimg');
 }
-           
-    /*empleadoimg::where('id',$id)->update($request->all());
-    return Redirect::to('empleadoimg')
-    ->with('success','Great! empleadoimg updated successfully');*/
+public function eliminar($id){
+    $empleadoimg = DB::statement("exec elimianar_empleado $id");
+    return back();
+}
 
-    public function destroy($id)
-    {
-    Empleadoimg::where('id',$id)->delete();
-    return Redirect::to('empleadoimg')->with('success','empleadoimg deleted successfully');
-    }
 }
